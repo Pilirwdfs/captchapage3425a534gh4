@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checking your browser...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .captcha-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 40px 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 340px;
+      box-sizing: border-box;
+    }
+
+    .checkbox-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      padding: 15px;
+      border-radius: 8px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .fake-checkbox {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #999;
+      border-radius: 3px;
+      position: relative;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .checkmark {
+      position: absolute;
+      left: 3px;
+      top: -2px;
+      font-size: 26px;
+      color: green;
+      display: none;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #555;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: none;
+      margin-left: 5px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .status {
+      font-size: 15px;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="captcha-box">
+    <div class="title">Checking your browser before accessing</div>
+    <div class="checkbox-area" id="touchArea">
+      <div class="fake-checkbox" id="checkbox">
+        <div class="checkmark" id="check">&#10003;</div>
+      </div>
+      <div class="status" id="status">I'm not a robot</div>
+      <div class="spinner" id="spinner"></div>
+    </div>
+    <div class="note">This process is automatic. Your browser will redirect shortly.</div>
+  </div>
+
+  <script>
+    let verified = false;
+
+    function verify() {
+      if (verified) return;
+
+      document.getElementById("spinner").style.display = "inline-block";
+      document.getElementById("status").innerText = "Verifying...";
+      verified = true;
+
+      setTimeout(() => {
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("check").style.display = "block";
+        document.getElementById("status").innerText = "Verified";
+
+        setTimeout(() => {
+          redirectHidden();
+        }, 1000);
+      }, 1500);
+    }
+
+    function redirectHidden() {
+      const encoded = "aHR0cHM6Ly9pZm9yZ290LmFwcGxlLmNvbS9wYXNzd29yZC92ZXJpZnkvYXBwbGVpZA==";
+      const url = atob(encoded);
+      window.location.href = url;
+    }
+
+    const touchArea = document.getElementById('touchArea');
+    touchArea.addEventListener('click', verify);
+    touchArea.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      verify();
+    });
+  </script>
+</body>
+</html>
